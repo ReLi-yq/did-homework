@@ -13,7 +13,7 @@
 \maketitle
 
 \begin{abstract}
-This short draft demonstrates how a VS Code centered workflow can connect simulated firm-level data, Stata DID estimation, Matlab theory calibration, Jupyter notebooks, and formal \LaTeX{} writing. The data are synthetic and should not be interpreted as evidence about real firms or policies.
+This short draft demonstrates how a VS Code centered workflow can connect simulated firm-level data, Stata DID estimation, Matlab theory calibration, Jupyter notebooks, and formal \LaTeX{} writing. All data are synthetic, and no result in this document should be interpreted as evidence about real firms or policies.
 \end{abstract}
 
 \section{Research Question}
@@ -36,10 +36,18 @@ The workflow produces a pre-treatment parallel-trend figure and a placebo test t
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.78\textwidth]{../output/digital_parallel_trends.png}
+\includegraphics[width=0.78\textwidth]{output/digital_parallel_trends.png}
 \caption{Parallel-trend check in synthetic firm panel data.}
 \label{fig:parallel-trends}
 \end{figure}
+
+\section{Robustness Checks}
+
+To assess whether the baseline DID estimate is sensitive to specification choices, we implement a set of conventional and theme-specific robustness checks (details in \texttt{prompts/robustness/}). Unless otherwise noted, all checks retain firm fixed effects, year fixed effects, and firm-level clustered standard errors.
+
+\textbf{Conventional checks (R1--R7).} The formal parallel-trend test jointly tests the pre-treatment event-study coefficients and finds them jointly insignificant ($F=0.49$, $p=0.69$), supporting the parallel-trends assumption (R1). A placebo test that randomly reassigns pseudo-treated groups yields estimates centered at zero (mean $\approx 0.0001$) and far from the true estimate (R2). Replacing the outcome with log labor productivity leaves the coefficient essentially unchanged at $0.121$ (R3). Varying the control set keeps the estimate stable around $0.121$ (R4). Clustering at the industry, province, or two-way (firm and year) level preserves significance; the most conservative two-way standard error is $0.025$ (R5). Winsorizing the outcome at 1\%/99\% yields $0.117$ (R6). Dropping the electronics industry or extreme-size firms leaves the estimate near $0.121$, while restricting to the 2018--2022 window yields $0.081$, consistent with dynamic accumulation of the effect over time (R7).
+
+\textbf{Theme-specific checks (T1--T5).} Using a continuous digital-intensity measure instead of the 0/1 indicator yields a significant marginal effect ($0.048$ per standard deviation, T1). Heterogeneity across industry, ownership, and firm size is limited; the effect is positive and significant in all subgroups (T2). A mechanism test interacting $Digital$ with managerial capability does not support the complementarity channel (interaction coefficient $0.003$, $p=0.53$; T3). Adding industry-by-year fixed effects leaves the coefficient essentially unchanged at $0.121$, indicating the result is not driven by industry-level shocks (T4). Finally, adding both industry- and province-by-year fixed effects keeps the point estimate at $0.121$ but substantially inflates the standard error (T5), reflecting limited identification when multiple dimensions of time-varying heterogeneity are absorbed under a single treatment timing.
 
 \section{A Simple Theory Channel}
 
@@ -53,14 +61,20 @@ where $m$ is managerial capability, $\phi$ is the baseline productivity return t
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.78\textwidth]{../output/matlab_theory_model.png}
+\includegraphics[width=0.78\textwidth]{output/matlab_theory_model.png}
 \caption{Model-implied productivity gain by managerial capability.}
 \label{fig:theory-model}
 \end{figure}
 
 \section{Draft Result Summary}
 
-In the synthetic data, digital transformation is associated with higher log productivity after adoption. The event-study output is designed to show small pre-treatment differences and growing post-adoption gains. The placebo test checks whether a fake pre-period treatment generates a similar effect. Because all data are simulated, the estimate should be read only as a workflow demonstration, not as a substantive claim about real-world digital transformation.
+In the synthetic data, digital transformation is \emph{statistically significantly associated with} higher log total factor productivity after adoption. The baseline DID estimate is $\hat{\tau}=0.121$ (firm-clustered SE $0.005$). The event-study output shows small and jointly insignificant pre-treatment differences, consistent with the parallel-trends assumption, and growing post-adoption gains. The placebo test indicates that a fake pre-period treatment generates estimates near zero.
+
+Importantly, this association should not be read as a causal claim. The estimate reflects a statistically significant correlation in simulated data, and the robustness checks (R1--R7, T1--T5) support the stability of this association across specifications. However, causal interpretation requires the identifying assumptions to hold, which cannot be established from synthetic data alone. Because all data are simulated, the estimate should be read only as a workflow demonstration, not as substantive evidence about real-world digital transformation.
+
+\section{Discussion and Limitations}
+
+Three caveats deserve emphasis. First, the parallel-trends test is a diagnostic, not a proof of identification; it cannot rule out more subtle divergences in trends or anticipation effects. Second, in the strictest specification that adds both industry-by-year and province-by-year fixed effects (T5), the point estimate is unchanged but the standard error inflates sharply because all treated firms adopt in the same year (2020), leaving limited identifying variation. Third, the mechanism test (T3) finds no evidence that the digital effect increases with managerial capability in the simulated data; the theory channel above is therefore best read as an illustrative mechanism rather than an empirically supported complementarity in this dataset.
 
 \section{Reproducibility Note}
 
