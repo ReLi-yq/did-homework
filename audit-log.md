@@ -74,3 +74,25 @@
 - ## 2026-08-31  分支实验：尝试替代设定
 
   ## 分支实操记录
+
+## 2026-08-31  Part A 稳健性检验（作业）
+
+- 工具：GitHub Copilot / VS Code / Python (statsmodels) / Git
+- 任务：完成 Part A 识别目标、复现主回归、R1–R7 常规检验、T1–T5 主题检验、汇总表
+- 接受的输出：output/estimand.md；scripts/estimate_main_did.py；scripts/run_robustness_checks.py；scripts/run_theme_checks.py；
+  prompts/robustness/00_replicate_main.md、R1–R7.md、T1–T5.md；output/main_did_results.csv；
+  output/robustness/robustness_table_r1_r7.csv、robustness_table_t1_t5.csv；output/robustness_summary.md
+- 拒绝或修改的输出：移除被企业固定效应吸收的 time-invariant 变量（soe/export_share）以修复聚类标准误 NaN；
+  如实报告 T3 机制负发现与 T5 识别变弱，不虚构机制
+- 验证方式：复现主回归系数 0.1209 与课堂 Stata 结果一致；R1–R7 全部通过；脚本可从原始数据重跑
+- 研究者判断：主效应在常规与主题稳健性检验下总体稳健；T3 负发现与 T5 识别变弱为残余威胁，需在论文中说明
+
+## 2026-08-31  Part B Skill vs 裸 Prompt（作业 3.3）
+
+- 工具：GitHub Copilot / VS Code
+- 任务：把 Part A 反复使用的"稳健性检验知识"制度化为 .claude/skills/robustness-check/SKILL.md（六模块），并用其重跑 R2 与裸 Prompt 对比
+- 裸 Prompt 版本的问题：未内置检查清单（如是否检查 SE NaN/共线、是否固定随机种子、是否逐项存 Markdown），容易漏验证或表述越界
+- Skill 版本改善：六模块内置"先读数据识别变量→复现→逐项检验→留痕→汇总"步骤与检查清单（共线、SE、平行趋势、越界表述），并含"如何迁移"一节
+- 差异本质："制度内置"（Skill 把检查写进流程）vs "每次提醒"（裸 Prompt 依赖临时交代）
+- 验证方式：用 SKILL.md 的检查清单重跑 R2（固定随机种子、报告伪估计分布），结果与 Part A 一致且过程更规范
+- 研究者判断：Skill 相比裸 Prompt 更可迁移、可审计，体现"制度优于指令"
