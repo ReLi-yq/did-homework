@@ -10,7 +10,7 @@ $$
 \log TFP_{it} = \alpha_i + \lambda_t + \tau\, Digital_{it} + X_{it}'\beta + \varepsilon_{it}
 $$
 
-其中 $\alpha_i$ 为企业固定效应，$\lambda_t$ 为年份固定效应，$X_{it}$ 为控制变量向量，标准误聚类到企业层面。
+其中 $\alpha_i$ 为企业固定效应，$\lambda_t$ 为年份固定效应，$X_{it}$ 为控制变量向量（资本密集度、出口占比、所有制），标准误聚类到企业层面。
 
 > 以下是完整四要素 Prompt（供 AI 阅读的纯文本）：
 
@@ -33,6 +33,9 @@ $$
 
 ## 为什么需要"干净脚本"（问题与修复）
 
+- **设定公式中 $X_{it}$ 完整包含三个控制变量（资本密集度、出口占比、所有制）**，
+  与企业固定效应模型公式保持一致；但由于 `export_share`、`soe` 企业层面不随时间变化，
+  会被企业固定效应完全吸收（不识别），实际估计中不单独放入，不影响 `digital` 的估计。
 - 课堂脚本 `scripts/analyze_did.py` 的模型同时包含 `soe`、`export_share`，
   但这两个变量**企业层面不随时间变化**，会被企业固定效应完全吸收 → 设计矩阵秩亏
   （SingularMatrixWarning），且聚类标准误在 statsmodels 0.15 下计算为 **NaN**。
